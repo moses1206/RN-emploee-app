@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, Modal } from 'react-native'
+import { View, Text, StyleSheet, Modal, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput, Button } from 'react-native-paper'
+import * as ImagePicker from 'expo-image-picker'
 
 export default function CreateEmployee() {
   const [name, setName] = useState('')
@@ -9,6 +10,26 @@ export default function CreateEmployee() {
   const [salary, Salary] = useState('')
   const [picture, setPicture] = useState('')
   const [modal, setModal] = useState(false)
+
+  const pickFromGallary = async () => {
+    let data = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    })
+    console.log('Gallary Image', data)
+  }
+
+  const pickFromCamera = async () => {
+    let data = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    })
+    console.log('Camera Image', data)
+  }
 
   return (
     <View style={styles.root}>
@@ -77,7 +98,7 @@ export default function CreateEmployee() {
               style={styles.buttonStlye}
               icon='camera'
               mode='contained'
-              onPress={() => console.log('Pressed')}
+              onPress={() => pickFromCamera()}
               theme={theme}
             >
               Camera
@@ -86,7 +107,7 @@ export default function CreateEmployee() {
               style={styles.buttonStlye}
               icon='image-area'
               mode='contained'
-              onPress={() => console.log('Pressed')}
+              onPress={() => pickFromGallary()}
               theme={theme}
             >
               Gallery

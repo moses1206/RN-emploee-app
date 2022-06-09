@@ -5,7 +5,10 @@ import { Title, Card } from 'react-native-paper'
 import { MaterialIcons, Entypo, AntDesign } from '@expo/vector-icons'
 import { Button } from 'react-native-paper'
 
-export default function Profile() {
+export default function Profile(props) {
+  const { id, name, phone, email, picture, salary, position } =
+    props.route.params.item
+
   const openDial = () => {
     if (Platform.OS === 'android') {
       Linking.openURL('tel:12345')
@@ -24,13 +27,13 @@ export default function Profile() {
         <Image
           style={{ width: 140, height: 140, borderRadius: 70 }}
           source={{
-            uri: 'https://images.unsplash.com/photo-1557862921-37829c790f19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80',
+            uri: picture,
           }}
         />
       </View>
       <View style={{ alignItems: 'center', margin: 15 }}>
-        <Title>Jang Bu Ho</Title>
-        <Text style={{ fontSize: 15 }}>Full Stack Developer</Text>
+        <Title>{name}</Title>
+        <Text style={{ fontSize: 15 }}>{position}</Text>
       </View>
       <Card
         style={styles.mycard}
@@ -40,19 +43,19 @@ export default function Profile() {
       >
         <View style={styles.cardContent}>
           <MaterialIcons name='email' size={32} color='#006aff' />
-          <Text style={styles.mytext}>abc@naver.com</Text>
+          <Text style={styles.mytext}>{email}</Text>
         </View>
       </Card>
       <Card style={styles.mycard} onPress={() => openDial()}>
         <View style={styles.cardContent}>
           <Entypo name='phone' size={32} color='#006aff' />
-          <Text style={styles.mytext}>125356</Text>
+          <Text style={styles.mytext}>{phone}</Text>
         </View>
       </Card>
       <Card style={styles.mycard}>
         <View style={styles.cardContent}>
           <MaterialIcons name='attach-money' size={32} color='#006aff' />
-          <Text style={styles.mytext}>8 LPA</Text>
+          <Text style={styles.mytext}>{salary}</Text>
         </View>
       </Card>
       <View
