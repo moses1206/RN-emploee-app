@@ -18,7 +18,14 @@ export default function CreateEmployee() {
       aspect: [1, 1],
       quality: 0.5,
     })
-    console.log('Gallary Image', data)
+    if (!data.cancelled) {
+      let newfile = {
+        uri: data.uri,
+        type: `test/${data.uri.split('.')[1]}`,
+        name: `test.${data.uri.split('.')[1]}`,
+      }
+      handleUpload(newfile)
+    }
   }
 
   const pickFromCamera = async () => {
@@ -28,7 +35,32 @@ export default function CreateEmployee() {
       aspect: [1, 1],
       quality: 0.5,
     })
-    console.log('Camera Image', data)
+    if (!data.cancelled) {
+      let newfile = {
+        uri: data.uri,
+        type: `test/${data.uri.split('.')[1]}`,
+        name: `test.${data.uri.split('.')[1]}`,
+      }
+      handleUpload(newfile)
+    }
+  }
+
+  const handleUpload = (image) => {
+    const data = new FormData()
+    data.append('file', image)
+    data.append('upload_preset', 'employeeApp')
+    data.append('cloud_name', 'moses23')
+
+    fetch('https://api.cloudinary.com/v1_1/moses23/image/upload', {
+      method: 'post',
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+        setPicture(data.url)
+        setModal(false)
+      })
   }
 
   return (
@@ -68,7 +100,7 @@ export default function CreateEmployee() {
       />
       <Button
         style={styles.inputStyle}
-        icon='upload'
+        icon={picture == '' ? 'upload' : 'check'}
         mode='contained'
         onPress={() => setModal(true)}
         theme={theme}
