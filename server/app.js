@@ -24,6 +24,16 @@ app.get('/', (req, res) => {
   res.send('Welcome node js')
 })
 
+app.get('/user', (req, res) => {
+  Employee.find({})
+    .then((data) => {
+      res.send(data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+
 app.post('/send-data', (req, res) => {
   const { name, email, phone, picture, salary, position } = req.body
   const employee = new Employee({
@@ -46,12 +56,33 @@ app.post('/send-data', (req, res) => {
 })
 
 app.post('/delete', async (req, res) => {
-  const { id } = req.body.id
-  if (!ObjectId.isValid(req.body.id))
-    res.status(400).send({ err: 'invalid marketId' })
-  const employee = await Employee.findOneAndDelete(id)
+  Employee.findByIdAndRemove(req.body.id)
+    .then((data) => {
+      console.log(data)
+      return res.send(data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
 
-  return res.send({ employee })
+app.post('/update', (req, res) => {
+  const { name, email, phone, picture, salary, position } = req.body
+  Employee.findByIdAndUpdate(req.body.id, {
+    name: name,
+    email: email,
+    phone: phone,
+    picture: picture,
+    salary: salary,
+    position: position,
+  })
+    .then((data) => {
+      console.log(data)
+      return res.send(data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 })
 
 app.listen(5000, () => {
