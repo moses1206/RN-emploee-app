@@ -86,5 +86,5 @@ app.post('/update', (req, res) => {
 })
 
 app.listen(5000, () => {
-  console.log('Server is Running !!')
+  console.log(`Server is Running port on ${process.env.PORT} !!`)
 })

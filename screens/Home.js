@@ -1,40 +1,32 @@
-import { View, Text, StyleSheet, Image, FlatList } from 'react-native'
-import React from 'react'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  FlatList,
+  ActivityIndicator,
+  Alert,
+} from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { Card, FAB } from 'react-native-paper'
 
 export default function Home(props) {
-  const data = [
-    {
-      id: 1,
-      name: 'BongGu',
-      email: 'BongGu@abc.com',
-      salary: '5 lpa',
-      phone: '123',
-      position: 'web dev',
-      picture:
-        'https://images.unsplash.com/photo-1654488719071-40a7a4b0d44d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=465&q=80',
-    },
-    {
-      id: 2,
-      name: 'TangBu',
-      email: 'TangBu@abc.com',
-      salary: '8 lpa',
-      phone: '123555',
-      position: 'mobile dev',
-      picture:
-        'https://images.unsplash.com/photo-1654488719071-40a7a4b0d44d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=465&q=80',
-    },
-    {
-      id: 3,
-      name: 'JJangGu',
-      email: 'JJangGu@abc.com',
-      salary: '12 lpa',
-      phone: '2212883',
-      position: 'Full Stack dev',
-      picture:
-        'https://images.unsplash.com/photo-1654488719071-40a7a4b0d44d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=465&q=80',
-    },
-  ]
+  const [employee, setEmployee] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchEmployee = () => {
+    fetch('http://e9b7-211-224-139-216.ngrok.io/user')
+      .then((res) => res.json())
+      .then((results) => {
+        setEmployee(results)
+        setLoading(false)
+      })
+      .catch((err) => Alert.alert('Fetch Employee Error !!'))
+  }
+
+  useEffect(() => {
+    fetchEmployee()
+  }, [])
 
   const renderList = (item) => {
     return (
@@ -52,7 +44,7 @@ export default function Home(props) {
                 marginRight: 10,
               }}
               source={{
-                uri: 'https://images.unsplash.com/photo-1654488719071-40a7a4b0d44d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=465&q=80',
+                uri: item.picture,
               }}
             />
             <View styles={{ marginLeft: 10 }}>
@@ -68,12 +60,15 @@ export default function Home(props) {
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        data={data}
+        data={employee}
         renderItem={({ item }) => {
           return renderList(item)
         }}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
+        onRefresh={() => fetchEmployee()}
+        refreshing={loading}
       />
+
       <FAB
         onPress={() => props.navigation.navigate('CreateEmployee')}
         style={styles.fab}

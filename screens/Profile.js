@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Image, Linking, Platform } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Linking,
+  Platform,
+  Alert,
+} from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Title, Card } from 'react-native-paper'
@@ -6,14 +14,30 @@ import { MaterialIcons, Entypo, AntDesign } from '@expo/vector-icons'
 import { Button } from 'react-native-paper'
 
 export default function Profile(props) {
-  const { id, name, phone, email, picture, salary, position } =
+  const { _id, name, phone, email, picture, salary, position } =
     props.route.params.item
+
+  const deleteHandler = () => {
+    fetch('http://e9b7-211-224-139-216.ngrok.io/delete', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: _id }),
+    })
+      .then((res) => res.json())
+      .then((deletedEmp) => {
+        Alert.alert(`${deletedEmp.name} deleted`)
+        props.navigation.navigate('Home')
+      })
+      .catch((err) => {
+        Alert.alert('Delete Employee Error!!')
+      })
+  }
 
   const openDial = () => {
     if (Platform.OS === 'android') {
-      Linking.openURL('tel:12345')
+      Linking.openURL(`tel:${phone}`)
     } else {
-      Linking.openURL('telprompt:12345')
+      Linking.openURL(`telprompt:${phone}`)
     }
   }
 
@@ -38,7 +62,7 @@ export default function Profile(props) {
       <Card
         style={styles.mycard}
         onPress={() => {
-          Linking.openURL('mailto:abc@abc.com')
+          Linking.openURL(`mailto:${email}`)
         }}
       >
         <View style={styles.cardContent}>
@@ -77,7 +101,7 @@ export default function Profile(props) {
           icon='delete'
           mode='contained'
           theme={theme}
-          onPress={() => console.log('Pressed')}
+          onPress={() => deleteHandler()}
         >
           Fire employee
         </Button>

@@ -1,15 +1,48 @@
-import { View, Text, StyleSheet, Modal, Alert } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  Alert,
+  KeyboardAvoidingView,
+} from 'react-native'
 import React, { useState } from 'react'
 import { TextInput, Button } from 'react-native-paper'
 import * as ImagePicker from 'expo-image-picker'
 
-export default function CreateEmployee() {
+export default function CreateEmployee({ navigation }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
-  const [salary, Salary] = useState('')
+  const [salary, setSalary] = useState('')
   const [picture, setPicture] = useState('')
+  const [position, setPosition] = useState('')
   const [modal, setModal] = useState(false)
+
+  const submitHandler = () => {
+    fetch('http://e9b7-211-224-139-216.ngrok.io/send-data', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        phone,
+        salary,
+        picture,
+        position,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        Alert.alert(`${data.name} is saved successfully`)
+        navigation.navigate('Home')
+      })
+      .catch((err) => {
+        Alert.alert('Create Employee Error !!')
+      })
+  }
 
   const pickFromGallary = async () => {
     let data = await ImagePicker.launchImageLibraryAsync({
@@ -61,6 +94,7 @@ export default function CreateEmployee() {
         setPicture(data.url)
         setModal(false)
       })
+      .catch((err) => Alert.alert('Image uploading Error !!'))
   }
 
   return (
@@ -98,6 +132,14 @@ export default function CreateEmployee() {
         theme={theme}
         onChangeText={(text) => setSalary(text)}
       />
+      <TextInput
+        label='Positon'
+        value={position}
+        mode='outlined'
+        style={styles.inputStyle}
+        theme={theme}
+        onChangeText={(text) => setPosition(text)}
+      />
       <Button
         style={styles.inputStyle}
         icon={picture == '' ? 'upload' : 'check'}
@@ -111,7 +153,7 @@ export default function CreateEmployee() {
         style={styles.inputStyle}
         icon='content-save'
         mode='contained'
-        onPress={() => console.log('Saved')}
+        onPress={() => submitHandler()}
         theme={theme}
       >
         Save
