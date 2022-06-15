@@ -18,7 +18,7 @@ export default function Profile(props) {
     props.route.params.item
 
   const deleteHandler = () => {
-    fetch('http://e9b7-211-224-139-216.ngrok.io/delete', {
+    fetch('http://10.0.2.2:5000/delete', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: _id }),
@@ -93,7 +93,17 @@ export default function Profile(props) {
           icon='account-edit'
           mode='contained'
           theme={theme}
-          onPress={() => console.log('Pressed')}
+          onPress={() => {
+            props.navigation.navigate('CreateEmployee', {
+              _id,
+              name,
+              phone,
+              email,
+              picture,
+              salary,
+              position,
+            })
+          }}
         >
           Edit
         </Button>

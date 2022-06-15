@@ -1,11 +1,16 @@
+import React, { createContext, useReducer } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View } from 'react-native'
 import Contants from 'expo-constants'
-import Home from './screens/Home'
+import Home from './screens/Home.js'
 import CreateEmployee from './screens/CreateEmployee'
 import Profile from './screens/Profile'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
+import { initialState, reducer } from './reducers/reducer'
+
+// const store = legacy_createStore(reducer)
+export const MyContext = createContext()
 
 const Stack = createStackNavigator()
 
@@ -38,10 +43,14 @@ function App() {
 }
 
 export default () => {
+  const [state, dispatch] = useReducer(reducer, initialState)
+
   return (
-    <NavigationContainer>
-      <App />
-    </NavigationContainer>
+    <MyContext.Provider value={{ state, dispatch }}>
+      <NavigationContainer>
+        <App />
+      </NavigationContainer>
+    </MyContext.Provider>
   )
 }
 

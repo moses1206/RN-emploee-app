@@ -7,22 +7,33 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Card, FAB } from 'react-native-paper'
+import { MyContext } from '../App'
 
 export default function Home(props) {
-  const [employee, setEmployee] = useState([])
-  const [loading, setLoading] = useState(true)
+  // const [employee, setEmployee] = useState([])
+  // const [loading, setLoading] = useState(true)
+
+  const { state, dispatch } = useContext(MyContext)
+  const { employee, loading } = state
+  console.log('eeemployee', employee)
+  console.log('loading', loading)
 
   const fetchEmployee = () => {
-    fetch('http://e9b7-211-224-139-216.ngrok.io/user')
+    fetch('http://10.0.2.2:5000/user')
       .then((res) => res.json())
       .then((results) => {
-        setEmployee(results)
-        setLoading(false)
+        // setEmployee(results)
+        // setLoading(false)
+        dispatch({ type: 'ADD_EMPLOYEE', payload: results })
+        dispatch({ type: 'SET_LOADING', payload: false })
+        console.log(results)
       })
       .catch((err) => Alert.alert('Fetch Employee Error !!'))
   }
+
+  console.log(employee, loading)
 
   useEffect(() => {
     fetchEmployee()
